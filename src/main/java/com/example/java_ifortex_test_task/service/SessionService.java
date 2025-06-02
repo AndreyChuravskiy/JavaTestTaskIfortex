@@ -1,8 +1,10 @@
 package com.example.java_ifortex_test_task.service;
 
 import com.example.java_ifortex_test_task.dto.SessionResponseDTO;
+import com.example.java_ifortex_test_task.entity.Session;
 import com.example.java_ifortex_test_task.mapper.SessionMapper;
 import com.example.java_ifortex_test_task.repository.SessionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +18,18 @@ public class SessionService {
 
     // Returns the first (earliest) desktop Session
     public SessionResponseDTO getFirstDesktopSession() {
-        return null;
+        Session session = sessionRepository.getFirstDesktopSession(null);
+        if (session == null) {
+            throw new EntityNotFoundException("No desktop session found");
+        }
+        return sessionMapper.toDto(session);
     }
 
     // Returns only Sessions from Active users that were ended before 2025
     public List<SessionResponseDTO> getSessionsFromActiveUsersEndedBefore2025() {
-        return null;
+        List<Session> sessions = sessionRepository.getSessionsFromActiveUsersEndedBefore2025(null);
+        return sessions.stream()
+                .map(sessionMapper::toDto)
+                .toList();
     }
 }
